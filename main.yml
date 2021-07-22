@@ -3,42 +3,42 @@ Parameters:
     Type: String
   VPCCIDR:
     AllowedPattern: '((\d{1,3})\.){3}\d{1,3}/\d{1,2}'
-    Default: 10.40.0.0/16
+    Default: 10.0.0.0/16
     Description: VPC CIDR Block (eg 10.0.0.0/16)
     Type: String
   PublicSubnet1CIDR:
     AllowedPattern: '((\d{1,3})\.){3}\d{1,3}/\d{1,2}'
-    Default: 10.40.0.0/24
+    Default: 10.0.0.0/24
     Description: VPC CIDR Block (eg 10.0.0.0/16)
     Type: String
   PublicSubnet2CIDR:
     AllowedPattern: '((\d{1,3})\.){3}\d{1,3}/\d{1,2}'
-    Default: 10.40.1.0/24
+    Default: 10.0.1.0/24
     Description: VPC CIDR Block (eg 10.0.0.0/16)
     Type: String
   PublicSubnet3CIDR:
     AllowedPattern: '((\d{1,3})\.){3}\d{1,3}/\d{1,2}'
-    Default: 10.40.2.0/24
+    Default: 10.0.2.0/24
     Description: VPC CIDR Block (eg 10.0.0.0/16)
     Type: String
   PrivateSubnet1CIDR:
     AllowedPattern: '((\d{1,3})\.){3}\d{1,3}/\d{1,2}'
-    Default: 10.40.3.0/24
+    Default: 10.0.3.0/24
     Description: VPC CIDR Block (eg 10.0.0.0/16)
     Type: String
   PrivateSubnet2CIDR:
     AllowedPattern: '((\d{1,3})\.){3}\d{1,3}/\d{1,2}'
-    Default: 10.40.4.0/24
+    Default: 10.0.4.0/24
     Description: VPC CIDR Block (eg 10.0.0.0/16)
     Type: String
   PrivateSubnet3CIDR:
     AllowedPattern: '((\d{1,3})\.){3}\d{1,3}/\d{1,2}'
-    Default: 10.40.5.0/24
+    Default: 10.0.5.0/24
     Description: VPC CIDR Block (eg 10.0.0.0/16)
     Type: String
 
 Resources:
-  VPC:
+  AlanVPC:
     Type: AWS::EC2::VPC
     Properties:
       CidrBlock: !Ref VPCCIDR
@@ -46,128 +46,135 @@ Resources:
       - Key: Name
         Value: !Ref Name
 
-  InternetGateway:
+  AlanInternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
       - Key: Name
         Value: !Ref Name
 
-  AttachGateway:
+  AlanAttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
-      VpcId: !Ref VPC
-      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref AlanVPC
+      InternetGatewayId: !Ref AlanInternetGateway
 
-  PublicSubnet1:
+  AlanPublicSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref VPC
+      VpcId: !Ref AlanVPC
       CidrBlock: !Ref PublicSubnet1CIDR
       AvailabilityZone: "us-west-2a"
       Tags:
       - Key: Name
         Value: !Sub ${Name}-PublicSubnet1
 
-  PublicSubnet2:
+  AlanPublicSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref VPC
+      VpcId: !Ref AlanVPC
       CidrBlock: !Ref PublicSubnet2CIDR
       AvailabilityZone: "us-west-2b"
       Tags:
       - Key: Name
         Value: !Sub ${Name}-PublicSubnet2
 
-  PublicSubnet3:
+  AlanPublicSubnet3:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref VPC
+      VpcId: !Ref AlanVPC
       CidrBlock: !Ref PublicSubnet3CIDR
       AvailabilityZone: "us-west-2c"
       Tags:
       - Key: Name
         Value: !Sub ${Name}-PublicSubnet3
 
-  PrivateSubnet1:
+  AlanPrivateSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref VPC
+      VpcId: !Ref AlanVPC
       CidrBlock: !Ref PrivateSubnet1CIDR
-      AvailabilityZone: "us-west-2d"
+      AvailabilityZone: "us-west-2a"
       Tags:
       - Key: Name
         Value: !Sub ${Name}-PrivateSubnet1
 
-  PrivateSubnet2:
+  AlanPrivateSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref VPC
+      VpcId: !Ref AlanVPC
       CidrBlock: !Ref PrivateSubnet2CIDR
-      AvailabilityZone: "us-west-2e"
+      AvailabilityZone: "us-west-2b"
       Tags:
       - Key: Name
         Value: !Sub ${Name}-PrivateSubnet2
 
-  PrivateSubnet3:
+  AlanPrivateSubnet3:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref VPC
+      VpcId: !Ref AlanVPC
       CidrBlock: !Ref PrivateSubnet3CIDR
-      AvailabilityZone: "us-west-2a"
+      AvailabilityZone: "us-west-2c"
       Tags:
       - Key: Name
         Value: !Sub ${Name}-PrivateSubnet3
 
-  PublicRouteTable:
+
+  AlanPublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref VPC
+      VpcId: !Ref AlanVPC
       Tags:
-      - Key: Name
-        Value: !Sub ${Name}-PublicRouteTable
+        - Key: Name
+          Value: !Sub ${Name}-PublicRouteTable
 
-  PrivateRouteTable:
+  AlanPrivateRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref VPC
+      VpcId: !Ref AlanVPC
       Tags:
-      - Key: Name
-        Value: !Sub ${Name}-PrivateRouteTable
+        - Key: Name
+          Value: !Sub ${Name}-PrivateRouteTable
 
-  PublicSubnetRouteTableAssociation1:
+  AlanPublicSubnetRouteTableAssociation1:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PublicSubnet1
-      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref AlanPublicSubnet1
+      RouteTableId: !Ref AlanPublicRouteTable
 
-  PublicSubnetRouteTableAssociation2:
+  AlanPublicSubnetRouteTableAssociation2:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PublicSubnet2
-      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref AlanPublicSubnet2
+      RouteTableId: !Ref AlanPublicRouteTable
 
-
-  PublicSubnetRouteTableAssociation3:
+  AlanPublicSubnetRouteTableAssociation3:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PublicSubnet3
-      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref AlanPublicSubnet3
+      RouteTableId: !Ref AlanPublicRouteTable
 
-  PrivateSubnetRouteTableAssociation1:
+  AlanPrivateSubnetRouteTableAssociation1:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PrivateSubnet1
-      RouteTableId: !Ref PrivateRouteTable
+      SubnetId: !Ref AlanPrivateSubnet1
+      RouteTableId: !Ref AlanPrivateRouteTable
 
-  PrivateSubnetRouteTableAssociation2:
+  AlanPrivateSubnetRouteTableAssociation2:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PrivateSubnet2
-      RouteTableId: !Ref PrivateRouteTable
+      SubnetId: !Ref AlanPrivateSubnet2
+      RouteTableId: !Ref AlanPrivateRouteTable
 
-  PrivateSubnetRouteTableAssociation3:
+  AlanPrivateSubnetRouteTableAssociation3:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PrivateSubnet3
-      RouteTableId: !Ref PrivateRouteTable
+      SubnetId: !Ref AlanPrivateSubnet3
+      RouteTableId: !Ref AlanPrivateRouteTable
+
+  AlanRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref AlanPublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref AlanInternetGateway
